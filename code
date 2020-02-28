@@ -1,0 +1,18 @@
+library(tidyverse)
+f <- dir("C:/Users/sidor/Documents/R_HSE")[dir("C:/Users/sidor/Documents/R_HSE")%>%
+                                          str_detect(".txt")]
+texts_list <- sapply(f, function(x) readLines(paste0(x)) %>%
+                       paste0(collapse = "")) 
+
+chinese_corpus <- tibble(name = names(texts_list), text = texts_list)                 
+
+View(chinese_corpus)
+
+
+
+#install.packages("tm",dependencies=TRUE)
+library(tm)
+vector <- VectorSource(texts_list)
+mycorpus <- VCorpus(vector)
+lowered_corpus <- tm_map(mycorpus,content_transformer(tolower))
+cleaned_corpus <- tm_map(lowered_corpus,removeWords,stopwords("russian"))
